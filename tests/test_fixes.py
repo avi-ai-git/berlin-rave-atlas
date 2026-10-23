@@ -145,7 +145,10 @@ class TestMistralModel:
         assert llm_client._provider_for("mistral-large-latest") == "mistral"
 
     def test_haiku_still_default_and_openrouter(self):
-        assert config.DEFAULT_MODEL == "anthropic/claude-haiku-4.5"
+        # Haiku stays the default unless an Ollama Cloud key is set (then gpt-oss:120b).
+        import os
+        expected = "gpt-oss:120b" if os.environ.get("OLLAMA_API_KEY") else "anthropic/claude-haiku-4.5"
+        assert config.DEFAULT_MODEL == os.environ.get("DEFAULT_MODEL", expected)
         assert llm_client._provider_for("anthropic/claude-haiku-4.5") == "openrouter"
 
     def test_mistral_has_price_entry(self):

@@ -81,7 +81,10 @@ AVAILABLE_MODELS: list[dict[str, str]] = [
 # passes OpenRouter's data-policy guardrails on a default account. Override
 # via DEFAULT_MODEL in .env (must be an id present in AVAILABLE_MODELS).
 DEFAULT_MODEL: str = os.environ.get(
-    "DEFAULT_MODEL", "anthropic/claude-haiku-4.5"
+    "DEFAULT_MODEL",
+    # Fall back to the Ollama Cloud model when its key is set (used while the
+    # OpenRouter key is dead); otherwise keep Haiku as before.
+    "gpt-oss:120b" if os.environ.get("OLLAMA_API_KEY") else "anthropic/claude-haiku-4.5",
 )
 
 # Per-model price table: (prompt $/1k tokens, completion $/1k tokens).
